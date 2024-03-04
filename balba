@@ -1,0 +1,212 @@
+#include <fstream>
+#include <vector>
+
+using namespace std;
+
+ifstream fin("balba.in");
+ofstream fout("balba.out");
+
+vector<int>v;
+vector<int>f;
+
+int main()
+{
+    int n,cer,i;
+    fin>>cer;
+    fin>>n;
+    v.resize(n);
+    f.resize(10);
+    for(i=0;i<n;i++)
+    {
+        fin>>v[i];
+        f[v[i]]++;
+    }
+    if(cer==1)
+    {
+        int balb=0,bal=0,i=0,nr=1;
+        while(i<n)
+        {
+            nr=1;
+            while(v[i]==v[i+1]&&i<n-1)
+            {
+                i++;
+                nr++;
+            }
+            if(nr>1)
+            {
+              bal++;
+            }
+            balb++;
+            i++;
+        }
+        fout<<balb<<"\n"<<bal;
+    }
+    else
+    {
+        int d,i,mij=-1,balba=-1;
+        bool imp=false;
+        for(i=0;i<10;i++)
+        {
+            if(f[i]%2==1)
+            {
+                imp=true;
+                break;
+            }    
+        }
+        if(imp==true)
+        {
+            bool ok=false;
+            for(i=9;i>=0;--i)
+            {
+                if(f[i]==1)
+                {
+                  if(i>mij){
+                     mij=i;
+                    ok=true;
+                  }    
+                  ok=true;
+                }
+                else if(f[i]%2==1&&f[i]>2)
+                {
+                  if(i>balba)
+                  {
+                      if(balba!=-1&&ok==false)
+                      {
+                        mij=balba;
+                      }
+                      balba=i;
+                  }
+                  else if(i>mij)
+                  {
+                    mij=i;
+                  }
+                }
+                
+            }
+            
+            if(balba==mij&&mij!=-1)
+            {
+                bool ok=false;
+                for(i=9;i>=1;i--)
+                {
+                    for(d=1;d<=f[i]/2;d++)
+                    {
+                      fout<<i;
+                      ok=true;
+                    }
+                  if(balba==i)
+                  {
+                    fout<<i;
+                  }
+                }
+                if(ok==true)
+                {
+                  for(d=1;d<=f[i]/2;d++)
+                  {
+                      fout<<i;
+                  }
+                  if(balba==i)
+                  {
+                    fout<<i;
+                  }
+                }
+                for(i=0;i<=9;i++)
+                {
+                    for(d=1;d<=f[i]/2;d++)
+                    {
+                        fout<<i;
+                    }
+                }
+            }
+            else if(balba==-1 && mij==-1)
+            {
+              for(i=9;i>=0;i--)
+              {
+                for(d=1;d<=f[i]/2;d++)
+                {
+                  fout<<i;
+                }
+              }
+
+              for(i=0;i<=9;i++)
+              {
+                for(d=1;d<=f[i]/2;d++)
+                {
+                  fout<<i;
+                }
+              }
+            }
+            else 
+            {
+              //fout<<balba<<" "<<mij<<"\n";
+              bool ok=false;
+              for(i=9;i>=1;i--)
+              {
+                for(d=1;d<=f[i]/2;d++)
+                {
+                    fout<<i;
+                    ok=true;
+                }
+                if(i==balba&&ok==true)
+                {
+                  fout<<i;
+                }
+              }
+              if(ok==true)
+              {
+                for(d=1;d<=f[0]/2;d++)
+                {
+                    fout<<0;
+                }
+                if(balba==0)
+                {
+                  fout<<0;
+                }
+                if(mij!=-1&&(ok=true || mij!=0))
+                fout<<mij;
+                
+                for(i=0;i<=9;i++)
+                {
+                  for(d=1;d<=f[i]/2;d++)
+                  {
+                      fout<<i;
+                      ok=true;
+                  }
+                }
+              }
+              else if(mij!=-1)
+              fout<<mij;
+            }
+        }
+        else
+        {
+          for(i=9;i>=0;i--)
+          {
+            if(i>balba and f[i]>=4)
+            {
+              balba=i;
+            }
+          }
+          for(i=9;i>=0;i--)
+          {
+            for(d=1;d<=f[i]/2;d++)
+            {
+              fout<<i;
+            }
+          }
+          if(balba!=-1)
+          {
+            fout<<balba;
+            f[balba]--;
+          }
+          for(i=0;i<=9;i++)
+          {
+            for(d=1;d<=f[i]/2;d++)
+            {
+              fout<<i;
+            }
+          }
+        }
+    }
+    return 0;
+}
